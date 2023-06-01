@@ -132,6 +132,8 @@ void loadFromFile2(Pracownik* tab, string filename){
     }
 }
 
+//void wroteWorkers(Pracownik* tab, )
+
 
 void menu() {
     // ZADANIE 1
