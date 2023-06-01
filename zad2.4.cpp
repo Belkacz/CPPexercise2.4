@@ -2,8 +2,17 @@
 #include <ctime>
 #include <iomanip>
 #include <fstream>
+#include <string>
 
 using namespace std;
+
+const int N = 6;
+
+struct Pracownik{
+    string nazwisko;
+    int staż;
+    int pensja;
+};
 
 int take(string question) {
     int data;
@@ -13,7 +22,7 @@ int take(string question) {
     return data;
 }
 
-void randomData(int N, int A[][6], int minNum, int maxNum) {
+void randomData(int A[][N], int minNum, int maxNum) {
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             A[i][j] = rand() % (maxNum - minNum + 1) + minNum;
@@ -21,7 +30,7 @@ void randomData(int N, int A[][6], int minNum, int maxNum) {
     }
 }
 
-void wroteMatrix(int matrix[0][6], int N, string text){
+void wroteMatrix(int matrix[0][N], int N, string text){
     cout << text << endl;
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
@@ -31,10 +40,12 @@ void wroteMatrix(int matrix[0][6], int N, string text){
     }
 }
 
-string saveToFile(int matrix[][6], int N){
+string saveToFile(int matrix[][N], int N){
     string filename;
-    cout << "Podaj nazwę pliku: ";
+    cout << endl;
+    cout << "Podaj nazwę pliku:";
     cin >> filename;
+    cout << endl;
     ofstream file(filename);
     if (file.is_open()) {
         for (int i = 0; i < N; i++) {
@@ -50,27 +61,28 @@ string saveToFile(int matrix[][6], int N){
     return filename;
 }
 
-void loadFromFile(int matrix[][6], int N, string filename){
+void loadFromFile1(int matrix[][N], int N, string filename){
+    int tempMatrix[N][N];
+
     ifstream file(filename);
-    int tempMatrix[6][6]; 
     if (file.is_open()) {
         int row = 0;
         int column = 0;
+        char element;
+
+        string array = "";
         while(!file.eof()){
-            cout << file.get();
-        if(file.get() != '|'){
-            row++;
-        }else{
-            file >> tempMatrix[column][row];
-        }
-        if(row >=6){
-            row = 0;
-            column ++;
-        }
-        }
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                matrix[i][j] = tempMatrix[j][i];
+            file.get(element);
+            if(element != '|'){
+                array += element;
+                if(element == '\n'){
+                    row ++;
+                    column = 0;
+                }
+            } else {
+                matrix[column][row] = stoi(array);
+                array = "";
+                column ++;
             }
         }
     } else {
@@ -79,20 +91,39 @@ void loadFromFile(int matrix[][6], int N, string filename){
     file.close();
 }
 
+void loadFromFile2(Pracownik* tab, string filename){
+    ifstream file(filename);
+    if (file.is_open()) {
+        while(!file.eof()){
+            char element;
+            file.get(element);
+            cout << element;
+        }
+    }
+}
+
+
 void menu() {
-    const int N = 6;
-    int A[6][6];
+    // ZADANIE 1
+    int A[N][N];
     int minNum, maxNum;
     string filename;
     srand(time(0));
 
     minNum = take("Podaj poczatek zakresu (liczbe minimalna): ");
     maxNum = take("Podaj koniec zakresu (liczbe maksymalna): ");
-    randomData(N, A, minNum, maxNum);
+    randomData(A, minNum, maxNum);
     wroteMatrix(A, N, "macierz 6x6: ");
     filename = saveToFile(A, N);
-    loadFromFile(A, N, filename);
+    loadFromFile1(A, N, filename);
     wroteMatrix(A, N, "macierz odwrocna 6x6: ");
+
+    // ZADANIE 2
+    int S = 0;
+    S = take("Podaj minimalna wysokość stażu ");
+    Pracownik* tab = new Pracownik[S];
+    loadFromFile2(tab, "pracownicy.txt");
+
 }
 
 int main() {
