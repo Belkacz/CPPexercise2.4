@@ -10,12 +10,13 @@ const int N = 6;
 
 struct Pracownik{
     string nazwisko;
-    int staż;
+    int staz;
     int pensja;
 };
 
 int take(string question) {
     int data;
+    cout<< endl;
     cout << question << endl;
     cin >> data;
     cout << endl;
@@ -94,11 +95,40 @@ void loadFromFile1(int matrix[][N], int N, string filename){
 void loadFromFile2(Pracownik* tab, string filename){
     ifstream file(filename);
     if (file.is_open()) {
+        int whiteSpace = 0;
+        int row = 0;
+        string array = "";
+        int tempStaz = 0;
+        int tempPensja = 0;
         while(!file.eof()){
             char element;
             file.get(element);
-            cout << element;
+            if(element == ' ' || element == '\n'){
+                if(whiteSpace == 0){
+                    tab[row].nazwisko = array;
+                    cout <<" nazwisko "<< array;
+                }
+                if(whiteSpace == 1){
+                    cout <<" staz "<< array;
+                    tab[row].staz = stoi(array);
+                }
+                if(whiteSpace == 2){
+                    cout <<" pensja "<< array;
+                    tab[row].pensja = stoi(array);
+                }
+                if(element == ' '){
+                    whiteSpace ++;
+                }
+                if(element == '\n'){
+                    row ++;
+                    whiteSpace = 0;
+                }
+                array = "";
+            } else {
+                array += element;
+            }
         }
+         file.close();
     }
 }
 
@@ -121,7 +151,7 @@ void menu() {
     // ZADANIE 2
     int S = 0;
     S = take("Podaj minimalna wysokość stażu ");
-    Pracownik* tab = new Pracownik[S];
+    Pracownik* tab = new Pracownik[10];
     loadFromFile2(tab, "pracownicy.txt");
 
 }
