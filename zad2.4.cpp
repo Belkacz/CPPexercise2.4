@@ -1,3 +1,4 @@
+// Łukasz Belka nr. indeksu 156162
 #include <iostream>
 #include <ctime>
 #include <iomanip>
@@ -56,13 +57,14 @@ string saveToFile(int matrix[][N], int N){
             file << endl;
         }
     } else {
-        cout << "Ups, coś poszło nie tak nie mogę otworzyć plisku" << endl;
+        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
     }
     file.close();
+    cout << "dane zapisane pomyślnie do pliku : " << filename << endl;
     return filename;
 }
 
-void loadFromFile1(int matrix[][N], int N, string filename){
+void loadFromFile(int matrix[][N], int N, string filename){
     int tempMatrix[N][N];
 
     ifstream file(filename);
@@ -87,12 +89,37 @@ void loadFromFile1(int matrix[][N], int N, string filename){
             }
         }
     } else {
-        cout << "Ups, coś poszło nie tak nie mogę otworzyć plisku" << endl;
+        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
     }
     file.close();
 }
 
-void loadFromFile2(Pracownik* tab, string filename){
+
+int getNumberOfWorkers(string filename){
+    ifstream file(filename);
+    int L = 0;
+    //int userInput = 0;
+    //cout << "ilu chesz swczytac pracownikow? " << endl;
+    //cin >> userInput;
+    if (file.is_open()) {
+        string line;
+        while (!file.eof()){
+            getline (file, line);
+            L ++;
+        }
+    } else {
+        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
+    }
+    // if(userInput > L){
+    //     cout << "podana liczba przekracza maksymlna liczbe wczytanych praconików, wczytno" << L << endl;
+    //     return L;
+    // } else {
+    //     return userInput;
+    // }
+    return L;
+}
+
+void loadFromFile(Pracownik* tab, string filename){
     ifstream file(filename);
     if (file.is_open()) {
         int whiteSpace = 0;
@@ -100,7 +127,7 @@ void loadFromFile2(Pracownik* tab, string filename){
         string array = "";
         int tempStaz = 0;
         int tempPensja = 0;
-        while(file.peek()!=EOF){
+        while(file.peek()!= EOF){
             char element;
             file.get(element);
             if(element == ' ' || element == '\n'){
@@ -130,6 +157,8 @@ void loadFromFile2(Pracownik* tab, string filename){
         }
         tab[row].pensja = stoi(array);
         file.close();
+    } else {
+        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
     }
 }
 
@@ -137,7 +166,7 @@ void wroteWorkers(Pracownik* tab, int L, string text){
     cout << endl;
     cout << text << endl;
     for(int i = 0; i < L; i ++){
-        cout << left << "| nazwisko: " << setw(9) << tab[i].nazwisko << " | staż: " << setw(2) << tab[i].staz << " | pensja: " << setw(4) <<tab[i].pensja << " |" << endl;
+        cout << left << "| nazwisko: " << setw(9) << tab[i].nazwisko << " | staz: " << setw(2) << tab[i].staz << " | pensja: " << setw(4) <<tab[i].pensja << " |" << endl;
     }
 }
 
@@ -164,12 +193,69 @@ void sortWorkers(Pracownik* tab, int L){
 
 }
 
-// double avaregeStaz(Pracownik* tab, int L, int S){
-    
-// }
+void avaregeTopSalary(Pracownik* tab, int L, int S){
+    double avgSallary = 0;
+    double avgTopSalary = 0;
+    for(int i = 0; i < L; i++){
+        avgSallary += tab[i].pensja;
+    }
+    avgSallary = avgSallary / L;
+    for(int i = 0; i <= S; i++){
+        avgTopSalary += tab[i].pensja;
+    }
+    avgTopSalary = avgTopSalary / S;
+
+    cout << "srednia pensja ogolem: " << avgSallary << endl;
+    cout << "srednia pensja pracownikow ze stazem rownym lub wiekszym " << S <<", wynosi: " << avgTopSalary << endl;
+}
+
+void analphabeticSort(Pracownik* tab, int L){
+    bool workersSorted = false;
+
+    while(workersSorted != true){
+        Pracownik tempWorker;
+        int swaps = 0;
+        for(int i = 0; i < L; i++){
+            if(i != 0){
+                if(tab[i].nazwisko < tab[i-1].nazwisko){
+                    tempWorker = tab[i-1];
+                    tab[i-1] = tab[i];
+                    tab[i] = tempWorker;
+                    swaps ++;
+                }
+            }
+        }
+        if(swaps == 0){
+            workersSorted = true;
+        }
+    }
+
+}
+
+string saveToFile(Pracownik* matrix, int N){
+    string filename;
+    cout << endl;
+    cout << "Podaj nazwę pliku:";
+    cin >> filename;
+    cout << endl;
+    ofstream file(filename);
+    if (file.is_open()) {
+        for (int i = 0; i < N; i++) {
+            file << matrix[i].nazwisko << " | ";
+            file << matrix[i].staz << " | ";
+            file << matrix[i].pensja << " | ";
+            file << endl;
+        }
+    } else {
+        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
+    }
+    file.close();
+    return filename;
+}
 
 void menu() {
     // ZADANIE 1
+    cout << "Łukasz Belka nr. indeksu 156162, grupa D1, semestr 2, rok 1" << endl;
     int A[N][N];
     int minNum, maxNum;
     string filename;
@@ -180,20 +266,26 @@ void menu() {
     randomData(A, minNum, maxNum);
     wroteMatrix(A, N, "macierz 6x6: ");
     filename = saveToFile(A, N);
-    loadFromFile1(A, N, filename);
+    loadFromFile(A, N, filename);
     wroteMatrix(A, N, "macierz odwrocna 6x6: ");
 
     // ZADANIE 2
     int S = 0;
-    int L = 10;
+    //int L = 10; //basic value
+    int L = getNumberOfWorkers("pracownicy.txt");
     Pracownik* tab = new Pracownik[L];
-    S = take("Podaj minimalna wysokość stażu do wyliczeń (średnia pensja) ");
-    Pracownik* topWorkersTab = new Pracownik[S];
-    loadFromFile2(tab, "pracownicy.txt");
-    wroteWorkers(tab, L, "Lista pracowników ");
-    sortWorkers(tab, L);
-    wroteWorkers(tab, L, "Lista pracowników posortowana stazem ");
 
+    loadFromFile(tab, "pracownicy.txt");
+    wroteWorkers(tab, L, "Lista pracownikow ");
+    sortWorkers(tab, L);
+    wroteWorkers(tab, L, "Lista pracownikow posortowana stazem ");
+    S = take("Podaj minimalna wysokość stazu do wyliczeń (srednia pensja) ");
+    avaregeTopSalary(tab, L, S);
+    analphabeticSort(tab, L);
+    wroteWorkers(tab, L, "Posortowana lista pracownikow ");
+    string workerListFileName = saveToFile(tab, L);
+    cout << "Posortowana tablica pracownikow zapsiana do pliku o nazwie : " << workerListFileName << endl;
+    delete [] tab;
 }
 
 int main() {
