@@ -100,20 +100,20 @@ void loadFromFile2(Pracownik* tab, string filename){
         string array = "";
         int tempStaz = 0;
         int tempPensja = 0;
-        while(!file.eof()){
+        while(file.peek()!=EOF){
             char element;
             file.get(element);
             if(element == ' ' || element == '\n'){
                 if(whiteSpace == 0){
                     tab[row].nazwisko = array;
-                    cout <<" nazwisko "<< array;
+                    //cout <<" nazwisko "<< array;
                 }
                 if(whiteSpace == 1){
-                    cout <<" staz "<< array;
+                    //cout <<" staz "<< array;
                     tab[row].staz = stoi(array);
                 }
                 if(whiteSpace == 2){
-                    cout <<" pensja "<< array;
+                    //cout <<" pensja "<< array;
                     tab[row].pensja = stoi(array);
                 }
                 if(element == ' '){
@@ -128,12 +128,45 @@ void loadFromFile2(Pracownik* tab, string filename){
                 array += element;
             }
         }
-         file.close();
+        tab[row].pensja = stoi(array);
+        file.close();
     }
 }
 
-//void wroteWorkers(Pracownik* tab, )
+void wroteWorkers(Pracownik* tab, int L, string text){
+    cout << endl;
+    cout << text << endl;
+    for(int i = 0; i < L; i ++){
+        cout << left << "| nazwisko: " << setw(9) << tab[i].nazwisko << " | staż: " << setw(2) << tab[i].staz << " | pensja: " << setw(4) <<tab[i].pensja << " |" << endl;
+    }
+}
 
+void sortWorkers(Pracownik* tab, int L){
+    bool workersSorted = false;
+
+    while(workersSorted != true){
+        Pracownik tempWorker;
+        int swaps = 0;
+        for(int i = 0; i < L; i++){
+            if(i != 0){
+                if(tab[i].staz > tab[i-1].staz){
+                    tempWorker = tab[i-1];
+                    tab[i-1] = tab[i];
+                    tab[i] = tempWorker;
+                    swaps ++;
+                }
+            }
+        }
+        if(swaps == 0){
+            workersSorted = true;
+        }
+    }
+
+}
+
+// double avaregeStaz(Pracownik* tab, int L, int S){
+    
+// }
 
 void menu() {
     // ZADANIE 1
@@ -152,9 +185,14 @@ void menu() {
 
     // ZADANIE 2
     int S = 0;
-    S = take("Podaj minimalna wysokość stażu ");
-    Pracownik* tab = new Pracownik[10];
+    int L = 10;
+    Pracownik* tab = new Pracownik[L];
+    S = take("Podaj minimalna wysokość stażu do wyliczeń (średnia pensja) ");
+    Pracownik* topWorkersTab = new Pracownik[S];
     loadFromFile2(tab, "pracownicy.txt");
+    wroteWorkers(tab, L, "Lista pracowników ");
+    sortWorkers(tab, L);
+    wroteWorkers(tab, L, "Lista pracowników posortowana stazem ");
 
 }
 
