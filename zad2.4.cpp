@@ -60,7 +60,7 @@ string saveToFile(int matrix[][N], int N){
         cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
     }
     file.close();
-    cout << "dane zapisane pomyślnie do pliku: " << filename << endl;
+    cout << "dane zapisane pomyslnie do pliku: " << filename << endl;
     return filename;
 }
 
