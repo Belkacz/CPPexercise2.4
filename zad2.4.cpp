@@ -17,10 +17,10 @@ struct Pracownik{
 
 int take(string question) {
     int data;
-    cout<< endl;
+
     cout << question << endl;
     cin >> data;
-    cout << endl;
+    cout<< endl;
     return data;
 }
 
@@ -32,7 +32,7 @@ void randomData(int A[][N], int minNum, int maxNum) {
     }
 }
 
-void wroteMatrix(int matrix[0][N], int N, string text){
+void wroteMatrix(int matrix[][N], int N, string text){
     cout << text << endl;
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
@@ -42,7 +42,7 @@ void wroteMatrix(int matrix[0][N], int N, string text){
     }
 }
 
-string saveToFile(int matrix[][N], int N){
+string saveToFile(int matrix[][N], int N, bool &cantOpenFileFlag){
     string filename;
     cout << endl;
     cout << "Podaj nazwę pliku: ";
@@ -57,14 +57,15 @@ string saveToFile(int matrix[][N], int N){
             file << endl;
         }
     } else {
-        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
+        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku, zamykam" << endl;
+        cantOpenFileFlag = true;
     }
     file.close();
     cout << "dane zapisane pomyslnie do pliku: " << filename << endl;
     return filename;
 }
 
-void loadFromFile(int matrix[][N], int N, string filename){
+void loadFromFile(int matrix[][N], int N, string filename, bool &cantOpenFileFlag){
     int tempMatrix[N][N];
 
     ifstream file(filename);
@@ -89,13 +90,14 @@ void loadFromFile(int matrix[][N], int N, string filename){
             }
         }
     } else {
-        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
+        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku, zamykam" << endl;
+        cantOpenFileFlag = true;
     }
     file.close();
 }
 
 
-int getNumberOfWorkers(string filename){
+int getNumberOfWorkers(string filename, bool &cantOpenFileFlag){
     ifstream file(filename);
     int L = 0;
     //int userInput = 0;
@@ -108,7 +110,8 @@ int getNumberOfWorkers(string filename){
             L ++;
         }
     } else {
-        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
+        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku, zamykam" << endl;
+        cantOpenFileFlag = true;
     }
     // if(userInput > L){
     //     cout << "podana liczba przekracza maksymlna liczbe wczytanych praconików, wczytno" << L << endl;
@@ -119,7 +122,7 @@ int getNumberOfWorkers(string filename){
     return L;
 }
 
-void loadFromFile(Pracownik* tab, string filename){
+void loadFromFile(Pracownik* tab, string filename, bool &cantOpenFileFlag){
     ifstream file(filename);
     if (file.is_open()) {
         int whiteSpace = 0;
@@ -158,7 +161,8 @@ void loadFromFile(Pracownik* tab, string filename){
         tab[row].pensja = stoi(array);
         file.close();
     } else {
-        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
+        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku, zamykam" << endl;
+        cantOpenFileFlag = true;
     }
 }
 
@@ -196,7 +200,11 @@ void sortWorkers(Pracownik* tab, int L){
 void avaregeTopSalary(Pracownik* tab, int L, int S){
     double avgSallary = 0;
     double avgTopSalary = 0;
+    int odestWorker = 0;
     for(int i = 0; i < L; i++){
+        if(i > 0 && tab[i].staz > tab[i-1].staz){
+            odestWorker = i;
+        }
         avgSallary += tab[i].pensja;
     }
     avgSallary = avgSallary / L;
@@ -208,10 +216,17 @@ void avaregeTopSalary(Pracownik* tab, int L, int S){
         }
         
     }
-    avgTopSalary = avgTopSalary / numberOfTopWorkers;
-
     cout << "srednia pensja ogolem: " << avgSallary << endl;
-    cout << "srednia pensja pracownikow ze stazem rownym lub wiekszym " << S <<", wynosi: " << avgTopSalary << endl;
+    cout << endl;
+    if(numberOfTopWorkers == 0){
+        avgTopSalary = 0;
+        cout << "podany staz " << S <<" jest wiekszy niz maksymalny staz ktoregokolwiek pracownika, nawet wielce zalozonego Pana "
+            << tab[odestWorker].nazwisko << " z niebagatelnym stazem " << tab[odestWorker].staz << " jednostek " << endl;
+    } else {
+        avgTopSalary = avgTopSalary / numberOfTopWorkers;
+        cout << "srednia pensja pracownikow ze stazem rownym lub wiekszym " << S <<", wynosi: " << avgTopSalary << endl;
+    }
+
 }
 
 void analphabeticSort(Pracownik* tab, int L){
@@ -237,7 +252,7 @@ void analphabeticSort(Pracownik* tab, int L){
 
 }
 
-string saveToFile(Pracownik* matrix, int N){
+string saveToFile(Pracownik* matrix, int N, bool &cantOpenFileFlag){
     string filename;
     cout << endl;
     cout << "Podaj nazwe pliku: ";
@@ -252,45 +267,67 @@ string saveToFile(Pracownik* matrix, int N){
             file << endl;
         }
     } else {
-        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
+        cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku, zamykam" << endl;
+        cantOpenFileFlag = true;
     }
     file.close();
     return filename;
 }
 
-void menu() {
+int menu() {
     // ZADANIE 1
     cout << "Lukasz Belka nr. indeksu 156162, grupa D1, semestr 2, rok 1" << endl;
     int A[N][N];
     int minNum, maxNum;
+    bool cantOpenFileFlag = false;
     string filename;
     srand(time(0));
-
+    cout<< endl;
     minNum = take("Podaj poczatek zakresu (liczbe minimalna): ");
     maxNum = take("Podaj koniec zakresu (liczbe maksymalna): ");
     randomData(A, minNum, maxNum);
     wroteMatrix(A, N, "macierz 6x6: ");
-    filename = saveToFile(A, N);
-    loadFromFile(A, N, filename);
+    filename = saveToFile(A, N,cantOpenFileFlag);
+    if(cantOpenFileFlag == true){
+        return 0;
+    }
+    loadFromFile(A, N, filename, cantOpenFileFlag);
+    if(cantOpenFileFlag == true){
+        return 0;
+    }
     wroteMatrix(A, N, "macierz odwrocona 6x6: ");
 
     // ZADANIE 2
     int S = 0;
     //int L = 10; //basic value
-    int L = getNumberOfWorkers("pracownicy.txt");
+    int L = getNumberOfWorkers("pracownicy.txt", cantOpenFileFlag);
+    if(cantOpenFileFlag == true){
+        return 0;
+    }
     Pracownik* tab = new Pracownik[L];
 
-    loadFromFile(tab, "pracownicy.txt");
+    loadFromFile(tab, "pracownicy.txt", cantOpenFileFlag);
+    if(cantOpenFileFlag == true){
+        delete [] tab;
+        return 0;
+    }
     wroteWorkers(tab, L, "Lista pracownikow ");
     sortWorkers(tab, L);
     wroteWorkers(tab, L, "Lista pracownikow posortowana stazem ");
+    cout << endl;
     S = take("Podaj minimalna wysokosc stazu do wyliczen (srednia pensja) ");
     avaregeTopSalary(tab, L, S);
     analphabeticSort(tab, L);
     wroteWorkers(tab, L, "Lista pracownikow posortowana alfabetycznie ");
-    string workerListFileName = saveToFile(tab, L);
-    cout << "Posortowana tablica pracownikow zapsiana do pliku o nazwie: " << workerListFileName << endl;
+    string workerListFileName = saveToFile(tab, L, cantOpenFileFlag);
+    if(cantOpenFileFlag == true){
+        delete [] tab;
+        return 0;
+    }
+    cout << "Posortowana tablica pracownikow zapisana do pliku o nazwie: " << workerListFileName << endl;
+
     delete [] tab;
+    return 0;
 }
 
 int main() {
