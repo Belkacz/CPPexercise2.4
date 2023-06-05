@@ -240,7 +240,7 @@ void analphabeticSort(Pracownik* tab, int L){
 string saveToFile(Pracownik* matrix, int N){
     string filename;
     cout << endl;
-    cout << "Podaj nazwę pliku: ";
+    cout << "Podaj nazwe pliku: ";
     cin >> filename;
     cout << endl;
     ofstream file(filename);
@@ -260,7 +260,7 @@ string saveToFile(Pracownik* matrix, int N){
 
 void menu() {
     // ZADANIE 1
-    cout << "Łukasz Belka nr. indeksu 156162, grupa D1, semestr 2, rok 1" << endl;
+    cout << "Lukasz Belka nr. indeksu 156162, grupa D1, semestr 2, rok 1" << endl;
     int A[N][N];
     int minNum, maxNum;
     string filename;
@@ -284,7 +284,7 @@ void menu() {
     wroteWorkers(tab, L, "Lista pracownikow ");
     sortWorkers(tab, L);
     wroteWorkers(tab, L, "Lista pracownikow posortowana stazem ");
-    S = take("Podaj minimalna wysokość stazu do wyliczeń (srednia pensja) ");
+    S = take("Podaj minimalna wysokosc stazu do wyliczen (srednia pensja) ");
     avaregeTopSalary(tab, L, S);
     analphabeticSort(tab, L);
     wroteWorkers(tab, L, "Lista pracownikow posortowana alfabetycznie ");
