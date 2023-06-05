@@ -272,7 +272,7 @@ void menu() {
     wroteMatrix(A, N, "macierz 6x6: ");
     filename = saveToFile(A, N);
     loadFromFile(A, N, filename);
-    wroteMatrix(A, N, "macierz odwrocna 6x6: ");
+    wroteMatrix(A, N, "macierz odwrocona 6x6: ");
 
     // ZADANIE 2
     int S = 0;
