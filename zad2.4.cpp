@@ -45,7 +45,7 @@ void wroteMatrix(int matrix[0][N], int N, string text){
 string saveToFile(int matrix[][N], int N){
     string filename;
     cout << endl;
-    cout << "Podaj nazwę pliku:";
+    cout << "Podaj nazwę pliku: ";
     cin >> filename;
     cout << endl;
     ofstream file(filename);
@@ -60,7 +60,7 @@ string saveToFile(int matrix[][N], int N){
         cout << "Ups, cos poszlo nie tak nie moge otworzyc pliku" << endl;
     }
     file.close();
-    cout << "dane zapisane pomyślnie do pliku : " << filename << endl;
+    cout << "dane zapisane pomyślnie do pliku: " << filename << endl;
     return filename;
 }
 
@@ -200,10 +200,15 @@ void avaregeTopSalary(Pracownik* tab, int L, int S){
         avgSallary += tab[i].pensja;
     }
     avgSallary = avgSallary / L;
-    for(int i = 0; i <= S; i++){
-        avgTopSalary += tab[i].pensja;
+    int numberOfTopWorkers = 0;
+    for(int i = 0; i < L; i++){
+        if(tab[i].staz >= S){
+            avgTopSalary += tab[i].pensja;
+            numberOfTopWorkers ++;
+        }
+        
     }
-    avgTopSalary = avgTopSalary / S;
+    avgTopSalary = avgTopSalary / numberOfTopWorkers;
 
     cout << "srednia pensja ogolem: " << avgSallary << endl;
     cout << "srednia pensja pracownikow ze stazem rownym lub wiekszym " << S <<", wynosi: " << avgTopSalary << endl;
@@ -235,7 +240,7 @@ void analphabeticSort(Pracownik* tab, int L){
 string saveToFile(Pracownik* matrix, int N){
     string filename;
     cout << endl;
-    cout << "Podaj nazwę pliku:";
+    cout << "Podaj nazwę pliku: ";
     cin >> filename;
     cout << endl;
     ofstream file(filename);
@@ -282,9 +287,9 @@ void menu() {
     S = take("Podaj minimalna wysokość stazu do wyliczeń (srednia pensja) ");
     avaregeTopSalary(tab, L, S);
     analphabeticSort(tab, L);
-    wroteWorkers(tab, L, "Posortowana lista pracownikow ");
+    wroteWorkers(tab, L, "Lista pracownikow posortowana alfabetycznie ");
     string workerListFileName = saveToFile(tab, L);
-    cout << "Posortowana tablica pracownikow zapsiana do pliku o nazwie : " << workerListFileName << endl;
+    cout << "Posortowana tablica pracownikow zapsiana do pliku o nazwie: " << workerListFileName << endl;
     delete [] tab;
 }
 
